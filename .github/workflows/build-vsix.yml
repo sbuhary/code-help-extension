@@ -23,7 +23,8 @@ jobs:
         run: npm ci
       - name: Check release tag
         if: startsWith(github.ref, 'refs/tags/')
-        run: node -e "const expected = 'v' + require('./package.json').version; if (process.env.GITHUB_REF_NAME !== expected) throw new Error('Release tag must match package version ' + expected);"
+        run: |
+          node -e "const expected = 'v' + require('./package.json').version; if (process.env.GITHUB_REF_NAME !== expected) throw new Error('Release tag must match package version ' + expected);"
       - name: Compile and test
         run: npm test
       - name: Package extension
@@ -52,4 +53,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" package/*.vsix --verify-tag --title "Code Help $RELEASE_TAG" --notes "Download the .vsix asset below. In VS Code, open Extensions, choose Install from VSIX, then run Code Help: Start. Full setup instructions are in the README."
+        run: |
+          gh release create "$RELEASE_TAG" package/*.vsix --verify-tag --title "Code Help $RELEASE_TAG" --notes "Download the .vsix asset below. In VS Code, open Extensions, choose Install from VSIX, then run Code Help: Start. Full setup instructions are in the README."
