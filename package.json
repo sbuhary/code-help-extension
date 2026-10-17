@@ -2,23 +2,51 @@
   "name": "code-help",
   "displayName": "Code Help",
   "description": "Show plain-text line explanations in a lightweight second-monitor browser window.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "code-help-local",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/sbuhary/code-help-extension.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sbuhary/code-help-extension.git"
+  },
   "homepage": "https://github.com/sbuhary/code-help-extension#readme",
-  "bugs": { "url": "https://github.com/sbuhary/code-help-extension/issues" },
-  "engines": { "vscode": "^1.90.0" },
-  "categories": ["Other"],
+  "bugs": {
+    "url": "https://github.com/sbuhary/code-help-extension/issues"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
   "main": "./dist/extension.js",
-  "extensionKind": ["ui"],
-  "capabilities": { "untrustedWorkspaces": { "supported": true }, "virtualWorkspaces": false },
+  "extensionKind": [
+    "ui"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": false
+  },
   "contributes": {
     "commands": [
-      { "command": "codeHelp.start", "title": "Code Help: Start" },
-      { "command": "codeHelp.stop", "title": "Code Help: Stop" },
-      { "command": "codeHelp.openWindow", "title": "Code Help: Open Window" },
-      { "command": "codeHelp.reload", "title": "Code Help: Reload Explanations" }
+      {
+        "command": "codeHelp.start",
+        "title": "Code Help: Start"
+      },
+      {
+        "command": "codeHelp.stop",
+        "title": "Code Help: Stop"
+      },
+      {
+        "command": "codeHelp.openWindow",
+        "title": "Code Help: Open Window"
+      },
+      {
+        "command": "codeHelp.reload",
+        "title": "Code Help: Reload Explanations"
+      }
     ]
   },
   "scripts": {
