@@ -1,0 +1,39 @@
+{
+  "name": "code-help",
+  "displayName": "Code Help",
+  "description": "Show plain-text line explanations in a lightweight second-monitor browser window.",
+  "version": "1.0.0",
+  "publisher": "code-help-local",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/sbuhary/code-help-extension.git" },
+  "homepage": "https://github.com/sbuhary/code-help-extension#readme",
+  "bugs": { "url": "https://github.com/sbuhary/code-help-extension/issues" },
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Other"],
+  "main": "./dist/extension.js",
+  "extensionKind": ["ui"],
+  "capabilities": { "untrustedWorkspaces": { "supported": true }, "virtualWorkspaces": false },
+  "contributes": {
+    "commands": [
+      { "command": "codeHelp.start", "title": "Code Help: Start" },
+      { "command": "codeHelp.stop", "title": "Code Help: Stop" },
+      { "command": "codeHelp.openWindow", "title": "Code Help: Open Window" },
+      { "command": "codeHelp.reload", "title": "Code Help: Reload Explanations" }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p .",
+    "vscode:prepublish": "npm run compile",
+    "test": "npm run compile && node --test test/*.test.cjs",
+    "test:integration": "npm run compile && node test/run-integration.cjs",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "~1.90.0",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.6.0",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code Help</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header>
+    <span class="brand">Code Help</span>
+    <div class="controls" aria-label="Text size">
+      <button id="smaller" aria-label="Decrease font size">A−</button>
+      <output id="size" aria-live="polite">28px</output>
+      <button id="larger" aria-label="Increase font size">A+</button>
+    </div>
+  </header>
+  <main>
+    <div class="location"><span id="filename">Ready when you are</span><span id="range"></span></div>
+    <div id="explanation">Move your cursor to a mapped source line in VS Code.</div>
+  </main>
+  <footer id="status" role="status">Connecting…</footer>
+</body>
+</html>

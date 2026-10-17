@@ -1,0 +1,17 @@
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #faf9f6; color: #202b33; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 32px; border-bottom: 1px solid #dfdfd9; }
+.brand { font-size: 15px; font-weight: 600; color: #596670; }
+.controls { display: flex; align-items: center; gap: 12px; }
+button { border: 1px solid #cbd0d1; border-radius: 6px; background: white; padding: 7px 12px; color: inherit; font-size: 16px; cursor: pointer; }
+button:hover { background: #eef2f2; }
+button:focus-visible { outline: 2px solid #26756c; outline-offset: 3px; }
+output { font-size: 13px; color: #596670; min-width: 38px; text-align: center; }
+main { max-width: 1120px; margin: 0 auto; padding: 54px 40px 80px; }
+.location { display: flex; flex-wrap: wrap; align-items: baseline; gap: 14px; margin-bottom: 26px; }
+#filename { font-weight: 600; font-size: 20px; overflow-wrap: anywhere; }
+#range { font-size: 16px; color: #287067; }
+#explanation { font-size: 28px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 4; }
+footer { padding: 16px 32px; color: #67747a; font-size: 13px; }
+@media (max-width: 600px) { header { padding: 16px; } main { padding: 32px 20px; } }
