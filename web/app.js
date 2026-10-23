@@ -1,5 +1,6 @@
 'use strict';
 const explanation = document.getElementById('explanation');
+const introduction = document.getElementById('introduction');
 const status = document.getElementById('status');
 const sizeLabel = document.getElementById('size');
 let fontSize = 28;
@@ -8,6 +9,7 @@ try { fontSize = Number(window.name.replace(/^code-help-font:/, '')) || 28; } ca
 function resize(delta) {
   fontSize = Math.min(64, Math.max(16, fontSize + delta));
   explanation.style.fontSize = `${fontSize}px`;
+  introduction.style.fontSize = `${fontSize}px`;
   sizeLabel.textContent = `${fontSize}px`;
   window.name = `code-help-font:${fontSize}`;
 }
@@ -17,6 +19,12 @@ document.getElementById('larger').addEventListener('click', () => resize(2));
 const events = new EventSource('events');
 events.onopen = () => { status.textContent = 'Connected · following your cursor'; };
 events.onerror = () => { status.textContent = 'Connection lost · reconnecting…'; };
+events.addEventListener('introduction', event => {
+  const data = JSON.parse(event.data);
+  document.getElementById('introduction-filename').textContent = data.filename;
+  introduction.textContent = data.text;
+  document.getElementById('introduction-panel').hidden = data.text.length === 0;
+});
 events.addEventListener('explanation', event => {
   const data = JSON.parse(event.data);
   document.getElementById('filename').textContent = data.filename;

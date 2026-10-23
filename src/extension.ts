@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'node:path';
-import { companionPath, Explanation, findExplanation, parseProperties } from './properties';
+import { companionPath, Explanation, findExplanation, parseExplanationFile } from './properties';
 import { ExplanationServer } from './server';
 
 let controller: Explainer | undefined;
@@ -58,6 +58,7 @@ class Explainer {
       this.source = source;
       this.sections = [];
       if (source) {
+        this.server.publishIntroduction({ filename: path.basename(source), text: '' });
         const companion = companionPath(source);
         // Watch the directory so atomic saves and creation of a missing companion work too.
         const watcher = vscode.workspace.createFileSystemWatcher(new vscode.RelativePattern(path.dirname(companion), '*'));
@@ -84,10 +85,13 @@ class Explainer {
     try {
       const bytes = await vscode.workspace.fs.readFile(vscode.Uri.file(companionPath(source)));
       if (revision !== this.revision || !this.running) { return; }
-      this.sections = parseProperties(Buffer.from(bytes).toString('utf8'));
+      const parsed = parseExplanationFile(Buffer.from(bytes).toString('utf8'));
+      this.sections = parsed.sections;
+      this.server.publishIntroduction({ filename: path.basename(source), text: parsed.introduction });
     } catch (error) {
       if (revision !== this.revision || !this.running) { return; }
       this.sections = [];
+      this.server.publishIntroduction({ filename: path.basename(source), text: '' });
       if (!(error instanceof vscode.FileSystemError && error.code === 'FileNotFound')) {
         this.output.appendLine(`Cannot read ${companionPath(source)}: ${String(error)}`);
       }

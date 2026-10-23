@@ -23,7 +23,7 @@ exports.run = async function () {
     const source = path.join(directory, 'expert_system.pl');
     const properties = path.join(directory, 'expert_system.properties');
     await fs.writeFile(source, 'adult(ali).\n\neligible(X) :-\n  adult(X),\n  employed(X).\n\nmain.\n');
-    await fs.writeFile(properties, '[1]\nFact\n[3-5]\nRule\n[4]\nSpecific\n[7]\nEntry');
+    await fs.writeFile(properties, '[introduction]\nProgram overview\n\nSecond paragraph\n[1]\nFact\n[3-5]\nRule\n[4]\nSpecific\n[7]\nEntry');
     const document = await vscode.workspace.openTextDocument(source);
     let editor = await vscode.window.showTextDocument(document);
     move(editor, 1);
@@ -38,8 +38,9 @@ exports.run = async function () {
           let end;
           while ((end = pending.indexOf('\n\n')) >= 0) {
             const frame = pending.slice(0, end); pending = pending.slice(end + 2);
-            if (!frame.startsWith('event: explanation')) { continue; }
+            if (!/^event: (explanation|introduction)\n/.test(frame)) { continue; }
             const value = JSON.parse(frame.split('\ndata: ')[1]);
+            value.kind = frame.split('\n')[0].slice(7);
             events.push(value); for (const check of waiters) { check(value); }
           }
         });
@@ -48,15 +49,20 @@ exports.run = async function () {
       request.on('error', reject);
     });
     await waitFor(value => value.text === 'Fact');
+    await waitFor(value => value.kind === 'introduction' && value.text === 'Program overview\n\nSecond paragraph');
     move(editor, 3); await waitFor(value => value.text === 'Rule');
     move(editor, 4); await waitFor(value => value.text === 'Specific');
     // No mapping: a new connection must still receive the previous explanation.
     move(editor, 2);
     await new Promise(resolve => setTimeout(resolve, 150));
     assert.equal(events.at(-1).text, 'Specific');
+    await fs.writeFile(properties, '[introduction]\nUpdated while unmapped\n[1]\nFact\n[3-5]\nRule\n[4]\nSpecific\n[7]\nEntry');
+    await waitFor(value => value.kind === 'introduction' && value.text === 'Updated while unmapped');
+    assert.equal(events.filter(value => value.kind === 'explanation').at(-1).text, 'Specific');
     move(editor, 7); await waitFor(value => value.text === 'Entry');
     await fs.writeFile(properties, '[7]\nReloaded automatically\n\nSecond paragraph');
     await waitFor(value => value.text === 'Reloaded automatically\n\nSecond paragraph');
+    assert.equal(events.filter(value => value.kind === 'introduction').at(-1).text, '');
     // Atomic replacement and deletion/recreation of a companion.
     await fs.writeFile(properties + '.tmp', '[7]\nAtomic replacement');
     await fs.rename(properties + '.tmp', properties);
@@ -66,9 +72,10 @@ exports.run = async function () {
     await waitFor(value => value.text === 'Recreated');
     const other = path.join(directory, 'other.py');
     await fs.writeFile(other, 'print("hello")\n');
-    await fs.writeFile(path.join(directory, 'other.properties'), '[1]\nPython file');
+    await fs.writeFile(path.join(directory, 'other.properties'), '[introduction]\nPython overview\n[1]\nPython file');
     editor = await vscode.window.showTextDocument(await vscode.workspace.openTextDocument(other));
     await waitFor(value => value.filename === 'other.py' && value.text === 'Python file');
+    await waitFor(value => value.kind === 'introduction' && value.filename === 'other.py' && value.text === 'Python overview');
     editor = await vscode.window.showTextDocument(document);
     move(editor, 7);
     await waitFor(value => value.filename === 'expert_system.pl' && value.text === 'Recreated');
@@ -78,11 +85,12 @@ exports.run = async function () {
     await assert.rejects(new Promise((resolve, reject) => {
       const req = http.get(url, res => { res.resume(); resolve(); }); req.on('error', reject);
     }));
-    console.log('PASS: real VS Code cursor events, ranges, retention, live reload, atomic saves, recreation, tab switching and stop.');
+    console.log('PASS: cursor events, ranges, retention, introductions, intro reload on unmapped lines, intro removal, atomic saves, recreation, tab switching and stop.');
   } finally {
     request?.destroy();
     await vscode.commands.executeCommand('codeHelp.stop');
     await vscode.commands.executeCommand('workbench.action.closeAllEditors');
-    await fs.rm(directory, { recursive: true, force: true });
+    // Windows may briefly retain directory handles after editor/watch disposal.
+    await fs.rm(directory, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
   }
 };

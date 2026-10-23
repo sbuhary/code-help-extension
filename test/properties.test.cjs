@@ -1,6 +1,18 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { parseProperties, findExplanation, companionPath } = require('../dist/properties');
+const { parseExplanationFile } = require('../dist/properties');
+
+test('introduction is independent of line ranges and preserves paragraphs', () => {
+  const parsed = parseExplanationFile('\uFEFF[introduction]\r\nOverview\r\n\r\n  Literal <text>\r\n[1]\r\nFact\r\n[INTRODUCTION]\r\nIgnored duplicate\r\n[3-5]\r\nRule');
+  assert.equal(parsed.introduction, 'Overview\n\n  Literal <text>');
+  assert.deepEqual(parsed.sections, [
+    { start: 1, end: 1, text: 'Fact' }, { start: 3, end: 5, text: 'Rule' }
+  ]);
+  assert.equal(parseExplanationFile('[1]\nFact\n[introduction]\nLater overview').introduction, 'Later overview');
+  assert.equal(parseExplanationFile('[introduction]\n[introduction]\nDuplicate').introduction, '');
+  assert.equal(parseExplanationFile('[1]\nFact').introduction, '');
+});
 
 test('UTF-8 BOM, CRLF, paragraphs, indentation and literal punctuation', () => {
   const sections = parseProperties('\uFEFF[1]\r\nFirst line.\r\n\r\n  :- \\path <b>literal</b>\r\n\r\n[3-5]\r\nRule');

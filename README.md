@@ -79,6 +79,22 @@ Replace the URL with the actual session URL. Browser executable names/paths depe
 
 ## Explanation files
 
+### Always-visible introduction
+
+Add an optional `[introduction]` section to your properties file for an overview, background, or notes that stay visible above the changing line explanation:
+
+```text
+[introduction]
+This program checks eligibility using Prolog facts and rules.
+
+These notes remain visible while you move between lines.
+
+[1]
+This explanation changes with the cursor.
+```
+
+The introduction supports literal multiline text and blank paragraphs, just like line explanations. Its header is case-insensitive and may appear anywhere in the file; the first introduction section wins if repeated. Save the file to update it immediately, even when the cursor is on an unmapped line. Switching source files loads that file's introduction; a missing or empty introduction hides the panel. The panel shows its source filename and stays above the independently scrolling line explanation. Long introductions scroll within the panel, which uses at most 40% of the window height. **A− / A+** adjusts both areas. Existing properties files without this section continue to work.
+
 Place the companion beside the source, replacing its final extension with `.properties`:
 
 | Source | Companion |
@@ -111,7 +127,7 @@ It executes the main logic.
 ```
 
 - Lines are 1-based; ranges include both endpoints.
-- Each header occupies a whole line: `[N]` or `[N-M]`. Surrounding whitespace is allowed.
+- Each header occupies a whole line: `[N]`, `[N-M]`, or the optional `[introduction]`. Surrounding whitespace is allowed.
 - All following text belongs to that section until the next header. Punctuation, quotes, backslashes, HTML-looking text, indentation and internal blank lines are literal. No escaping is necessary.
 - Separator blank lines at the start/end of each section are removed; internal paragraphs and line breaks are preserved. An empty section displays an empty explanation.
 - The narrowest matching range wins. For equal widths (including duplicate headers), the first section wins.

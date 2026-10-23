@@ -1,4 +1,10 @@
 :root { color-scheme: light; }
+body { height: 100vh; display: flex; flex-direction: column; }
+header, footer { flex-shrink: 0; }
+#introduction-panel { flex-shrink: 0; max-height: 40vh; overflow: auto; padding: 20px 40px; border-bottom: 1px solid #dfdfd9; background: #f0f4f1; }
+.introduction-label { color: #287067; font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+#introduction { font-size: 28px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 4; }
+main { flex: 1; min-height: 0; width: 100%; overflow: auto; }
 * { box-sizing: border-box; }
 body { margin: 0; background: #faf9f6; color: #202b33; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px 32px; border-bottom: 1px solid #dfdfd9; }

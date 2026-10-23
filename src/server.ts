@@ -14,6 +14,7 @@ export class ExplanationServer {
   private server: http.Server | undefined;
   private clients = new Set<http.ServerResponse>();
   private current: DisplayExplanation | undefined;
+  private introduction: { filename: string; text: string } | undefined;
   private address: string | undefined;
   get url(): string | undefined { return this.address; }
 
@@ -41,6 +42,7 @@ export class ExplanationServer {
         response.flushHeaders();
         response.write('retry: 1000\n\n');
         this.clients.add(response);
+        if (this.introduction) { this.send(response, 'introduction', this.introduction); }
         if (this.current) { this.send(response, 'explanation', this.current); }
         request.on('close', () => this.clients.delete(response));
         response.on('error', () => { this.clients.delete(response); response.destroy(); });
@@ -69,6 +71,12 @@ export class ExplanationServer {
     for (const client of this.clients) { this.send(client, 'explanation', explanation); }
   }
 
+  publishIntroduction(introduction: { filename: string; text: string }): void {
+    if (JSON.stringify(this.introduction) === JSON.stringify(introduction)) { return; }
+    this.introduction = introduction;
+    for (const client of this.clients) { this.send(client, 'introduction', introduction); }
+  }
+
   private send(client: http.ServerResponse, event: string, data: unknown): void {
     // JSON is only the SSE wire format; explanation files are always plain text.
     if (!client.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)) {
@@ -86,6 +94,7 @@ export class ExplanationServer {
     }
     this.clients.clear();
     this.current = undefined;
+    this.introduction = undefined;
     if (server) {
       await new Promise<void>(resolve => {
         server.close(() => resolve());

@@ -27,12 +27,16 @@ test('HTTP assets, SSE delivery, reconnect snapshot, access checks and shutdown'
     assert.match(response.headers.get('content-type'), /text\/event-stream/);
     const reader = response.body.getReader();
     const expected = { filename: 'hello.py', start: 2, end: 5, text: 'One\n\nTwo <script>' };
+    const introduction = { filename: 'hello.py', text: 'Overview\n\nAlways here' };
+    server.publishIntroduction(introduction);
     server.publish(expected);
     let buffer = '';
     while (!buffer.includes('event: explanation')) {
       buffer += new TextDecoder().decode((await reader.read()).value);
     }
     assert.ok(buffer.includes(JSON.stringify(expected)));
+    assert.ok(buffer.includes('event: introduction'));
+    assert.ok(buffer.includes(JSON.stringify(introduction)));
     abort.abort();
     const reconnectAbort = new AbortController();
     const reconnect = await fetch(url + 'events', { signal: reconnectAbort.signal });
@@ -42,6 +46,13 @@ test('HTTP assets, SSE delivery, reconnect snapshot, access checks and shutdown'
       buffer += new TextDecoder().decode((await reconnectReader.read()).value);
     }
     assert.ok(buffer.includes(JSON.stringify(expected)));
+    assert.ok(buffer.includes(JSON.stringify(introduction)));
+    server.publishIntroduction({ filename: 'other.py', text: '' });
+    buffer = '';
+    while (!buffer.includes('event: introduction')) {
+      buffer += new TextDecoder().decode((await reconnectReader.read()).value);
+    }
+    assert.ok(buffer.includes('"text":""'));
     reconnectAbort.abort();
   } finally { await server.stop(); }
   await server.stop();
