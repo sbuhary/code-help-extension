@@ -2,7 +2,7 @@
   "name": "code-help",
   "displayName": "Code Help",
   "description": "Show plain-text line explanations in a lightweight second-monitor browser window.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "code-help-local",
   "license": "MIT",
   "repository": {
