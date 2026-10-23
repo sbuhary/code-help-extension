@@ -13,6 +13,10 @@ You only need desktop VS Code and a browser. You do **not** need Node.js, npm, G
 5. Add your explanations and save the properties file. For example:
 
    ```text
+   [introduction]
+   This is an overview of the program.
+   It stays visible above the line explanations as you move the cursor.
+
    [1]
    This explanation appears when the cursor is on line 1.
 
@@ -26,7 +30,7 @@ You only need desktop VS Code and a browser. You do **not** need Node.js, npm, G
 7. The explanation page opens in your browser. Put it in a separate browser window and move it to monitor 2. Keep VS Code on monitor 1.
 8. Click or move the cursor to a mapped line in VS Code. Its explanation appears automatically. Use **A− / A+** in the browser to change the text size.
 
-Write the explanations yourself; the extension displays the saved text. Save changes to the `.properties` file to update them automatically. Unmapped lines keep the previous explanation. Run **Code Help: Open Window** if you close the browser page, or **Code Help: Stop** when finished.
+Write the explanations yourself; the extension displays the saved text. The optional `[introduction]` section stays visible at the top, while numbered sections change with the cursor. Save changes to the `.properties` file to update them automatically. Unmapped lines keep the previous explanation. Run **Code Help: Open Window** if you close the browser page, or **Code Help: Stop** when finished.
 
 If nothing appears, check that both files are saved, their basenames match exactly, the properties file is beside the source, and your cursor is on a line listed in a section header. You can download the [example source](https://raw.githubusercontent.com/sbuhary/code-help-extension/main/examples/expert_system.pl) and [example explanations](https://raw.githubusercontent.com/sbuhary/code-help-extension/main/examples/expert_system.properties) into the same local folder to try it.
 
@@ -110,6 +114,10 @@ This works with any saved local source file, regardless of language. Two files w
 The `.properties` file is UTF-8 sectioned plain text, **not Java Properties syntax**:
 
 ```text
+[introduction]
+This expert system checks eligibility using facts and rules.
+This overview stays visible while the line explanation changes.
+
 [1]
 This is a Prolog fact.
 It declares information in the knowledge base.
