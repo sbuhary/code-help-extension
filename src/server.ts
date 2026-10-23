@@ -24,7 +24,8 @@ export class ExplanationServer {
     const assets = new Map([
       ['', { type: 'text/html; charset=utf-8', body: readFileSync(path.join(webDirectory, 'index.html')) }],
       ['style.css', { type: 'text/css; charset=utf-8', body: readFileSync(path.join(webDirectory, 'style.css')) }],
-      ['app.js', { type: 'text/javascript; charset=utf-8', body: readFileSync(path.join(webDirectory, 'app.js')) }]
+      ['app.js', { type: 'text/javascript; charset=utf-8', body: readFileSync(path.join(webDirectory, 'app.js')) }],
+      ['formatting.js', { type: 'text/javascript; charset=utf-8', body: readFileSync(path.join(webDirectory, 'formatting.js')) }]
     ]);
     const server = http.createServer((request, response) => {
       response.setHeader('Cache-Control', 'no-store');

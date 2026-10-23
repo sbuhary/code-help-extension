@@ -62,6 +62,7 @@
     "@types/vscode": "~1.90.0",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.6.0",
+    "jsdom": "^26.1.0",
     "typescript": "^5.9.3"
   }
 }

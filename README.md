@@ -14,11 +14,11 @@ You only need desktop VS Code and a browser. You do **not** need Node.js, npm, G
 
    ```text
    [introduction]
-   This is an overview of the program.
+   <strong>Program overview</strong>
    It stays visible above the line explanations as you move the cursor.
 
    [1]
-   This explanation appears when the cursor is on line 1.
+   This explanation appears when the cursor is on <strong>line 1</strong>.
 
    [3-5]
    This explanation appears on lines 3, 4, and 5.
@@ -30,7 +30,7 @@ You only need desktop VS Code and a browser. You do **not** need Node.js, npm, G
 7. The explanation page opens in your browser. Put it in a separate browser window and move it to monitor 2. Keep VS Code on monitor 1.
 8. Click or move the cursor to a mapped line in VS Code. Its explanation appears automatically. Use **A− / A+** in the browser to change the text size.
 
-Write the explanations yourself; the extension displays the saved text. The optional `[introduction]` section stays visible at the top, while numbered sections change with the cursor. Save changes to the `.properties` file to update them automatically. Unmapped lines keep the previous explanation. Run **Code Help: Open Window** if you close the browser page, or **Code Help: Stop** when finished.
+Write the explanations yourself; the extension displays the saved text. You can use basic HTML such as `<strong>bold</strong>` and `<em>italic</em>` for formatting. The optional `[introduction]` section stays visible at the top, while numbered sections change with the cursor. Save changes to the `.properties` file to update them automatically. Unmapped lines keep the previous explanation. Run **Code Help: Open Window** if you close the browser page, or **Code Help: Stop** when finished.
 
 If nothing appears, check that both files are saved, their basenames match exactly, the properties file is beside the source, and your cursor is on a line listed in a section header. You can download the [example source](https://raw.githubusercontent.com/sbuhary/code-help-extension/main/examples/expert_system.pl) and [example explanations](https://raw.githubusercontent.com/sbuhary/code-help-extension/main/examples/expert_system.properties) into the same local folder to try it.
 
@@ -97,7 +97,7 @@ These notes remain visible while you move between lines.
 This explanation changes with the cursor.
 ```
 
-The introduction supports literal multiline text and blank paragraphs, just like line explanations. Its header is case-insensitive and may appear anywhere in the file; the first introduction section wins if repeated. Save the file to update it immediately, even when the cursor is on an unmapped line. Switching source files loads that file's introduction; a missing or empty introduction hides the panel. The panel shows its source filename and stays above the independently scrolling line explanation. Long introductions scroll within the panel, which uses at most 40% of the window height. **A− / A+** adjusts both areas. Existing properties files without this section continue to work.
+The introduction supports multiline plain text or the basic HTML formatting described below, just like line explanations. Its header is case-insensitive and may appear anywhere in the file; the first introduction section wins if repeated. Save the file to update it immediately, even when the cursor is on an unmapped line. Switching source files loads that file's introduction; a missing or empty introduction hides the panel. The panel shows its source filename and stays above the independently scrolling line explanation. Long introductions scroll within the panel, which uses at most 40% of the window height. **A− / A+** adjusts both areas. Existing properties files without this section continue to work.
 
 Place the companion beside the source, replacing its final extension with `.properties`:
 
@@ -136,13 +136,37 @@ It executes the main logic.
 
 - Lines are 1-based; ranges include both endpoints.
 - Each header occupies a whole line: `[N]`, `[N-M]`, or the optional `[introduction]`. Surrounding whitespace is allowed.
-- All following text belongs to that section until the next header. Punctuation, quotes, backslashes, HTML-looking text, indentation and internal blank lines are literal. No escaping is necessary.
+- All following text belongs to that section until the next header. Plain text preserves punctuation, quotes, backslashes, indentation and internal blank lines. Sections containing a supported HTML tag use formatted rendering instead, as described below.
 - Separator blank lines at the start/end of each section are removed; internal paragraphs and line breaks are preserved. An empty section displays an empty explanation.
 - The narrowest matching range wins. For equal widths (including duplicate headers), the first section wins.
 - Text before the first header is ignored. Numeric headers with zero, reversed ranges or unsafe integer values discard that section. Other lines are literal text; a malformed header such as `[abc]` is not a header.
 - A literal whole line matching `[N]` or `[N-M]` is necessarily a header; the format has no escape mechanism.
 - With no match, missing/empty/deleted properties, or no source editor, the last displayed explanation and its original filename/range stay visible. Before the first match, the browser shows a waiting message.
 - The primary cursor's active position controls the display. Line numbers are fixed mappings: update them if source edits shift code.
+
+### HTML formatting (introduction and line explanations)
+
+Use basic HTML directly inside the `.properties` file. There is no extra setting or dependency to install:
+
+```html
+[introduction]
+<h2>Program overview</h2>
+<p>This program checks <strong>eligibility</strong>.</p>
+
+[3-5]
+<p><strong>Eligibility rule</strong></p>
+<ul>
+  <li><code>:-</code> means <em>IF</em>.</li>
+  <li>The comma means <strong>AND</strong>.</li>
+</ul>
+<p>Both conditions must succeed.<br>Otherwise the rule fails.</p>
+```
+
+Supported tags: `<b>`, `<strong>`, `<i>`, `<em>`, `<u>`, `<s>`, `<del>`, `<mark>`, `<small>`, `<sub>`, `<sup>`, `<h1>` through `<h6>`, `<p>`, `<br>`, `<ul>`, `<ol>`, `<li>`, `<pre>`, `<code>`, `<blockquote>`, `<hr>`, `<div>`, and `<span>`.
+
+Each section is detected independently. Without a supported tag, it remains plain text with its original line breaks and blank paragraphs. With a supported tag, normal HTML spacing applies: use `<p>` for paragraphs, `<br>` for line breaks, and `<pre><code>...</code></pre>` for indented multiline code. In HTML sections, write `&lt;`, `&gt;`, and `&amp;` for literal angle brackets and ampersands in code. To display a supported tag literally, wrap the example in `<code>` and escape its brackets, such as `<code>&lt;strong&gt;</code>`.
+
+Only formatting is allowed. All attributes (including `style`, `class`, `id`, URLs, and event handlers) are removed. Scripts, stylesheets, images, frames, forms, SVG and other active content are discarded. Unsupported harmless wrappers are removed while retaining their text. Arbitrary CSS, links and external resources are not supported. Font size is still controlled by **A− / A+**. The files remain ordinary UTF-8 text; there is no JSON or configuration escaping.
 
 ## Commands
 
@@ -207,8 +231,8 @@ Use the equivalent absolute executable path on other systems. The integration te
 
 `onDidChangeTextEditorSelection` and `onDidChangeActiveTextEditor` drive updates. Only the active source's parsed sections are kept in memory; cursor movements perform no disk I/O. A single nonrecursive directory watcher detects companion creation, changes, deletion and atomic saves, including sources outside a workspace. Switching sources disposes the previous watcher and reads the next companion. Revision checks discard stale asynchronous reads after tab changes, subsequent reloads or shutdown.
 
-Node's built-in HTTP server binds exclusively to `127.0.0.1` on an available port. A random session URL, Host/Origin checks and a restrictive content policy limit access. Explanation strings are sent via SSE and rendered with `textContent`, never as HTML. JSON is used only as the internal SSE wire encoding, never for explanation storage. No source code or explanation text leaves your computer. A slow client is disconnected and reconnects to the current snapshot. There are no heartbeat timers or polling loops; browsers reconnect SSE after connection loss. Extension shutdown closes connections and releases the port.
+Node's built-in HTTP server binds exclusively to `127.0.0.1` on an available port. A random session URL, Host/Origin checks and a restrictive content policy limit access. Explanation strings are sent via SSE. Plain sections use `textContent`; HTML sections are parsed in an inert template and rebuilt as fresh allowed formatting elements and text nodes, with no input attributes copied to the live page. JSON is used only as the internal SSE wire encoding, never for explanation storage. No source code or explanation text leaves your computer. A slow client is disconnected and reconnects to the current snapshot. There are no heartbeat timers or polling loops; browsers reconnect SSE after connection loss. Extension shutdown closes connections and releases the port.
 
-Files: `src/properties.ts` (parser), `src/extension.ts` (VS Code lifecycle), `src/server.ts` (HTTP/SSE), `web/` (display), `examples/` (Prolog demo), `test/` (verification). There are no runtime npm dependencies.
+Files: `src/properties.ts` (parser), `src/extension.ts` (VS Code lifecycle), `src/server.ts` (HTTP/SSE), `web/` (display and HTML formatting), `examples/` (Prolog demo), `test/` (verification). There are no runtime npm dependencies. The development-only `jsdom` dependency verifies DOM rendering and sanitization during tests and is excluded from the VSIX.
 
 VS Code references: [API](https://code.visualstudio.com/api/references/vscode-api), [packaging extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension).

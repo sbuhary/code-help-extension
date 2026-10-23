@@ -14,7 +14,8 @@ test('HTTP assets, SSE delivery, reconnect snapshot, access checks and shutdown'
     assert.equal(html.status, 200);
     assert.match(await html.text(), /Code Help/);
     assert.match(html.headers.get('content-security-policy'), /frame-ancestors 'none'/);
-    assert.match(await (await fetch(url + 'app.js')).text(), /textContent/);
+    assert.match(await (await fetch(url + 'app.js')).text(), /CodeHelpFormatting.render/);
+    assert.match(await (await fetch(url + 'formatting.js')).text(), /createTextNode/);
     assert.equal((await fetch(new URL('/', url))).status, 404);
     assert.equal((await fetch(url, { method: 'POST' })).status, 403);
     assert.equal((await fetch(url, { headers: { Origin: 'https://example.com' } })).status, 403);

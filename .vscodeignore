@@ -8,6 +8,7 @@ test-results/**
 node_modules/**
 .npm-cache/**
 debug.log
+*.log
 tsconfig.json
 package-lock.json
 dist/**/*.map

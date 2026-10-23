@@ -20,4 +20,18 @@ main { max-width: 1120px; margin: 0 auto; padding: 54px 40px 80px; }
 #range { font-size: 16px; color: #287067; }
 #explanation { font-size: 28px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 4; }
 footer { padding: 16px 32px; color: #67747a; font-size: 13px; }
+#explanation.formatted, #introduction.formatted { white-space: normal; }
+.formatted :is(h1, h2, h3, h4, h5, h6) { line-height: 1.25; margin: 0.8em 0 0.4em; }
+.formatted h1 { font-size: 1.6em; }
+.formatted h2 { font-size: 1.35em; }
+.formatted h3 { font-size: 1.15em; }
+.formatted :is(h4, h5, h6) { font-size: 1em; }
+.formatted :is(p, ul, ol, pre, blockquote) { margin: 0.6em 0; }
+.formatted > :first-child { margin-top: 0; }
+.formatted > :last-child { margin-bottom: 0; }
+.formatted code { font-family: ui-monospace, Consolas, monospace; font-size: 0.9em; background: #e9eeeb; padding: 0.1em 0.25em; border-radius: 4px; }
+.formatted pre { white-space: pre-wrap; background: #e9eeeb; padding: 0.75em; border-radius: 6px; }
+.formatted pre code { padding: 0; }
+.formatted blockquote { border-left: 3px solid #8fa99f; padding-left: 0.8em; color: #52645c; }
+.formatted hr { border: 0; border-top: 1px solid #cbd0d1; margin: 0.8em 0; }
 @media (max-width: 600px) { header { padding: 16px; } main { padding: 32px 20px; } }

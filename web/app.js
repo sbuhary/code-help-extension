@@ -22,14 +22,14 @@ events.onerror = () => { status.textContent = 'Connection lost · reconnecting�
 events.addEventListener('introduction', event => {
   const data = JSON.parse(event.data);
   document.getElementById('introduction-filename').textContent = data.filename;
-  introduction.textContent = data.text;
+  CodeHelpFormatting.render(introduction, data.text);
   document.getElementById('introduction-panel').hidden = data.text.length === 0;
 });
 events.addEventListener('explanation', event => {
   const data = JSON.parse(event.data);
   document.getElementById('filename').textContent = data.filename;
   document.getElementById('range').textContent = data.start === data.end ? `Line ${data.start}` : `Lines ${data.start}–${data.end}`;
-  explanation.textContent = data.text;
+  CodeHelpFormatting.render(explanation, data.text);
 });
 events.addEventListener('stopped', () => {
   events.close();
