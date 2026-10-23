@@ -187,12 +187,12 @@ From the project root:
 npm install
 npm test
 npm run package
-code --install-extension ./code-help-1.0.2.vsix
+code --install-extension ./code-help-1.1.0.vsix
 ```
 
 For reproducible installs after the first setup, use `npm ci` instead of `npm install`; the lockfile is included. Packaging compiles automatically and uses the development-only `@vscode/vsce` tool. No Marketplace account or publishing token is needed. `code-help-local` is a local package publisher identifier; replace it with your registered publisher before Marketplace publication.
 
-Alternatively, in normal VS Code open Extensions → **… → Install from VSIX…**, select `code-help-1.0.2.vsix`, then reload VS Code if prompted. Open your source project and run **Code Help: Start**. Node/npm are only build requirements, not requirements for installed users.
+Alternatively, in normal VS Code open Extensions → **… → Install from VSIX…**, select `code-help-1.1.0.vsix`, then reload VS Code if prompted. Open your source project and run **Code Help: Start**. Node/npm are only build requirements, not requirements for installed users.
 
 ## GitHub Actions and releases
 
@@ -202,11 +202,11 @@ To publish a new downloadable release:
 
 1. Update `version` in `package.json` and run `npm install --package-lock-only` to update the lockfile.
 2. Commit and push the change to `main`.
-3. Tag that commit with the same version and push the tag. For example, for version `1.0.3`:
+3. Tag that commit with the same version and push the tag. For example, for version `1.1.1`:
 
    ```sh
-   git tag v1.0.3
-   git push origin v1.0.3
+   git tag v1.1.1
+   git push origin v1.1.1
    ```
 
 The workflow checks that the tag matches `package.json`, builds the VSIX, and creates a public GitHub Release with the VSIX attached. It uses GitHub's automatic token; no personal token or Marketplace account is needed. Build jobs have read-only repository access; only the tag release job receives permission to create a release. See [GitHub's artifact documentation](https://docs.github.com/actions/using-workflows/storing-workflow-data-as-artifacts).
